@@ -1,51 +1,18 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { ShoppingCart, UserPlus, LogIn, LogOut, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useUserStore } from '../stores/useUserStore';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import api from '../api';
-import useCartStore from '../stores/useCartStore';
+import useCart from '../hooks/useCart';
+import { useAuth } from '../hooks/useAuth';
 
 const Header = () => {
 
-  const logout = useUserStore((state) => state.logout);
-  const cart = useCartStore((state) => state.cart);
-  const getCartItems = useCartStore((state) => state.getCartItems);
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationKey: ["signout"],
-    mutationFn: api.signout,
-    onSuccess: () => {
-      logout();
-      queryClient.removeQueries();
-      navigate("/signin", { replace: true });
-    },
-
-    onError: (error) => {
-      const message = error?.response?.data?.message || error?.message;
-      toast.error(message)
-    }
-  });
-
-  const { data } = useQuery({
-    queryKey: ["get-cart-items"],
-    queryFn: api.getCartItems,
-  });
-
-  const user = useUserStore((state) => state.user);
-  const isAdmin = user && user.role === "admin";
+  const { cart } = useCart();
+  const { user, isAdmin, signoutMutation } = useAuth();
 
   const handleLogout = () => {
-    mutation.mutate();
+    signoutMutation.mutate();
   }
 
-  useEffect(() => {
-    if(data && data?.cartItems) {
-      getCartItems(data?.cartItems)
-    }
-  }, [data?.cartItems])
 
   return (
     <header className="fixed flex items-center justify-between p-5 py-4 top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-emerald-800">

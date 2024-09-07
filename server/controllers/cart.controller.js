@@ -44,8 +44,9 @@ export const addToCart = async (req, res) => {
 export const updateCartQuantity = async (req, res) => {
     const { productId } = req.params;
     const { quantity } = req.body;
- 
+
     const user = req.user;
+
     try {
         const existingItem = user.cartItems.find((item) => item.id === productId);
 

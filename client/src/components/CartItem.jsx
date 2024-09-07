@@ -1,49 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Minus, Plus, Trash } from 'lucide-react'
-import useCartStore from '../stores/useCartStore'
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "./../api"
-
-
+import useCart from '../hooks/useCart';
 
 const CartItem = ({item}) => {
 
-    const [cartQuantity, setCartQuantity] = useState(0);
-
-    const removeFromCart = useCartStore((state) => state.removeFromCart);
-    const updateCartQuantity = useCartStore((state) => state.updateCartQuantity);
-
-    const queryClient = useQueryClient();
-
-   const deleteMutation =  useMutation({
-        mutationKey: ["remove-all-from-cart"],
-        mutationFn: api.removeAllFromCart,
-        onSuccess: () => {
-            if(item) {
-                removeFromCart(item)
-            }
-        }
-    })
-
-   const updateMutation =  useMutation({
-        mutationKey: ["update-cart-quantity"],
-        mutationFn: api.updateCartQuantity,
-        onSuccess: () => {
-            if(item) {
-                queryClient.invalidateQueries({ queryKey: ["get-cart-items"] })
-                updateCartQuantity(item, cartQuantity)
-            }
-        }
-    })
+const { deleteMutation, updateMutation, setCartQuantity, setItem } = useCart();
 
     const handleRemoveFromCart = () => {
         if(deleteMutation.isPending) return;
+		setItem(item)
         deleteMutation.mutate(item)
     }
 
     const handleUpdateCart = (quantity) => {
         if(updateMutation.isPending) return;
         setCartQuantity(quantity)
+		setItem(item)
         updateMutation.mutate({item, quantity});
     }
 

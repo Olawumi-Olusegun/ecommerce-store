@@ -2,36 +2,23 @@ import React from 'react'
 import { useForm } from 'react-hook-form';
 import { Mail, Lock, User, ArrowRight, Loader } from "lucide-react"
 import { motion } from "framer-motion";
-import { Link, useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../stores/useUserStore';
-import { useMutation } from '@tanstack/react-query';
-import api from '../../api';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const Signin = () => {
-  const navigate = useNavigate();
 
-  const setUser = useUserStore((state) => state.setUser);
 
   const { register, handleSubmit, reset, formState: { errors },  } = useForm();
-  
-  const mutation = useMutation({
-    mutationKey: ["signin"],
-    mutationFn: api.signin,
-    onSuccess: (data) => {
-      setUser(data?.user);
-      reset();
-      navigate("/", { replace: true })
-    },
-    onError: (error) => {
-      const message = error?.response?.data?.message || error?.message;
-      toast.error(message)
-    }
-  });
 
+  const { signinMutation } = useAuth();
+
+	if(signinMutation.isSuccess) {
+		reset();
+	}
 
   const onSubmit = (data) => {
-    if(mutation.isPending) return;
-    mutation.mutate(data);
+    if(signinMutation.isPending) return;
+    signinMutation.mutate(data);
   }
 
   return (
@@ -99,9 +86,9 @@ const Signin = () => {
 							rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600
 							 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2
 							  focus:ring-emerald-500 transition duration-150 ease-in-out disabled:opacity-50'
-							disabled={mutation.isPending}
+							disabled={signinMutation.isPending}
 						>
-							{mutation.isPending ? (
+							{signinMutation.isPending ? (
 								<>
 									<Loader className='mr-2 h-5 w-5 animate-spin' aria-hidden='true' />
 									Loading...

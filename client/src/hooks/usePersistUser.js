@@ -7,9 +7,15 @@ const usePersistUser = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorMMessage, setErrorMessage] = useState(null);
 
+    const user = useUserStore((state) => state.user);
     const setUser = useUserStore((state) => state.setUser);
 
+    const isAdmin = user && user.role === "admin";
+
     const getUserData = async () => {
+
+        if(!user) return;
+
         try {
             setIsLoading(true);
             setErrorMessage(null);
@@ -31,7 +37,7 @@ const usePersistUser = () => {
         getUserData();
     }, [setUser]);
 
-    return { isLoading, errorMMessage }
+    return { isLoading, errorMMessage, user, isAdmin }
 }
 
 export default usePersistUser;
