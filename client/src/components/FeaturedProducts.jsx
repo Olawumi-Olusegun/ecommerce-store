@@ -5,6 +5,7 @@ import { useUserStore } from '../stores/useUserStore';
 import { useNavigate } from 'react-router-dom';
 import useCartStore from '../stores/useCartStore';
 import api from '../api';
+import toast from 'react-hot-toast';
 
 const FeaturedProducts = ({featuredProducts}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
