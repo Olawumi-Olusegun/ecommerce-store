@@ -190,7 +190,9 @@ export const signout = async (req, res) => {
 
 export const userProfile = async (req, res) => {
 
-    const { _id, name, email, role, image, exp } = req.user;
+    const exp = req.exp ?? undefined;
+
+    const { _id, name, email, role, image } = req.user;
 
     try {
         const user = { _id, name, email, role, image, exp  }
