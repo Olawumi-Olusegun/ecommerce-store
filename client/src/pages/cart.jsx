@@ -1,15 +1,20 @@
 import React from 'react'
-import useCartStore from "./../stores/useCartStore"
 import EmptyCartUI from '../components/EmptyCartUI';
 import { motion } from "framer-motion"
 import CartItem from '../components/CartItem';
 import PeopleAlsoBought from '../components/PeopleAlsoBought';
 import OrderSummary from '../components/OrderSummary';
 import GiftCouponCard from '../components/GiftCouponCard';
+import useCart from '../hooks/useCart';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Cart = () => {
 
-  const cart = useCartStore((state) => state.cart);
+  const { isCartLoading, cart } = useCart();
+
+  if(isCartLoading) {
+	return <LoadingSpinner />
+  }
 
   return (
     <div className='py-8 md:py-16'>

@@ -5,12 +5,16 @@ import { motion } from "framer-motion";
 import { useMutation } from "@tanstack/react-query";
 import api from '../api';
 import toast from 'react-hot-toast';
+import useProduct from '../hooks/useProduct';
+
+
 const ProductsList = () => {
 const [itemId, setItemId] = useState('')
-  const products = useProductStore((state) => state.products);
+//   const products = useProductStore((state) => state.products);
+const { products, allProducts } = useProduct();
   const toggleFeaturedProduct = useProductStore((state) => state.toggleFeaturedProduct);
   const deleteProduct = useProductStore((state) => state.deleteProduct);
-  
+
   const mutation = useMutation({
     mutationKey: ["toggle-featured"],
     mutationFn: api.toggleFeaturedProduct,
@@ -92,7 +96,7 @@ const [itemId, setItemId] = useState('')
 				</thead>
 
 				<tbody className='bg-gray-800 divide-y divide-gray-700'>
-					{products?.map((product) => (
+					{allProducts?.map((product) => (
 						<tr key={product._id} className='hover:bg-gray-700'>
 							<td className='px-6 py-4 whitespace-nowrap'>
 								<div className='flex items-center'>

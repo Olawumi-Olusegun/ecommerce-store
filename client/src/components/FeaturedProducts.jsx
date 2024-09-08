@@ -1,39 +1,19 @@
-import { useMutation } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useUserStore } from '../stores/useUserStore';
 import { useNavigate } from 'react-router-dom';
-import useCartStore from '../stores/useCartStore';
-import api from '../api';
 import toast from 'react-hot-toast';
+import useProduct from '../hooks/useProduct';
 
 const FeaturedProducts = ({featuredProducts}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(4);
 
-	const [product, setProduct] = useState(null);
-
-	
 	const navigate = useNavigate();
 
 	const authUser = useUserStore((state) => state.user);
-	const addToCart = useCartStore((state) => state.addToCart);
 
-	const mutation =  useMutation({
-		mutationKey: ["add-to-cart"],
-		mutationFn: api.addToCart,
-
-		onSuccess: () => {
-			if(product) {
-				addToCart(product)
-			}
-		}, 
-		onError: (error) => {
-			const message = error?.response?.data?.message ?? error?.message;
-			toast.error(message, { id: "add-to-cart" });
-		}
-	})
-
+	const { addToCartMutation, setProduct } = useProduct();
 
     useEffect(() => {
         const handleWindowResize = () => {
@@ -72,7 +52,7 @@ const FeaturedProducts = ({featuredProducts}) => {
 		}
 
 		setProduct(product)
-		mutation.mutate(product)
+		addToCartMutation.mutate(product)
 	
 	
 	}
@@ -94,17 +74,17 @@ const FeaturedProducts = ({featuredProducts}) => {
 											<img
 												src={product.image}
 												alt={product.name}
-												className='w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-110'
+												className='w-full pointer-events-none h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-110'
 											/>
 										</div>
-										<div className='p-4'>
-											<h3 className='text-lg font-semibold mb-2 text-white'>{product.name}</h3>
+										<div className='p-4 flex flex-col mt-auto'>
+											<h3 className='text-lg font-semibold mb-2 text-white min-h-20 line-clamp-3 '>{product.name}</h3>
 											<p className='text-emerald-300 font-medium mb-4'>
 												${product.price.toFixed(2)}
 											</p>
 											<button
 												onClick={() => handleAddToCart(product)}
-												className='w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded transition-colors duration-300 
+												className='w-full self-end mt-auto bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded transition-colors duration-300 
 												flex items-center justify-center'
 											>
 												<ShoppingCart className='w-5 h-5 mr-2' />

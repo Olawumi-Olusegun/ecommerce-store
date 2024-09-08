@@ -3,6 +3,7 @@ import { create } from 'zustand'
 
 const useProductStore = create((set) => ({
     products: [],
+    featuredProducts: [],
     isLoading: false,
     setProducts: (products) => set({products}),
     createProduct: (productData) => {
@@ -20,8 +21,9 @@ const useProductStore = create((set) => ({
             products: prevState.products.filter((product) => product._id !== productId)
         }))
     },
-    fetchFeaturedProducts: (products) => {
-        set({ products })
+
+    setFeaturedProducts: (products) => {
+        set({ featuredProducts: products })
     },
 }))
 

@@ -11,18 +11,19 @@ export const connectDb = async () => {
 
     mongoose.set("strictQuery", true);
 
-    if(mongoose.connection.readyState === 0) {
+    try {
+
+        await mongoose.connect(MONGODB_URI);
+
+        if(mongoose.connection.readyState === 1) {
+            console.log(`Connected to database`)
+        }else {
+            console.log("Connection already established")
+        }
         
-        try {
-              await mongoose.connect(MONGODB_URI);
-              console.log(`Connected to database`)
-          } catch (error) {
-              console.log(`Error connecting to database ${error}`);
-              process.exit(1);
-          }
-          
-    } else {
-        console.log("Connection already established")
+    } catch (error) {
+        console.log(`Error connecting to database ${error}`);
+        process.exit(1);
     }
 
 

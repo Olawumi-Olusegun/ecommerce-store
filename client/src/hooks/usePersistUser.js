@@ -9,8 +9,10 @@ const usePersistUser = () => {
 
     const user = useUserStore((state) => state.user);
     const setUser = useUserStore((state) => state.setUser);
+    const isAuth = useUserStore((state) => state.isAuth);
 
-    const isAdmin = user && user.role === "admin";
+    const isAdmin = user && user.role === "admin" ? true : false;
+
 
     const getUserData = async () => {
 
@@ -35,9 +37,9 @@ const usePersistUser = () => {
 
     useEffect(() => {
         getUserData();
-    }, [setUser]);
+    }, [setUser, isAuth]);
 
-    return { isLoading, errorMMessage, user, isAdmin }
+    return { isLoading, errorMMessage, user, isAdmin, isAuth }
 }
 
 export default usePersistUser;

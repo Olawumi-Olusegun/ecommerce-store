@@ -1,30 +1,16 @@
-import React, { useEffect } from 'react'
-import useProductStore from '../stores/useProductStore';
-import { useQuery } from '@tanstack/react-query';
+import React from 'react'
 import { useParams } from "react-router-dom"
 import { motion } from "framer-motion";
 import LoadingSpinner from "./../components/LoadingSpinner";
 import ProductCard from '../components/ProductCard';
-import api from '../api';
+import useProduct from '../hooks/useProduct';
 
 const Category = () => {
 
   const { category } = useParams();
 
-    const setProducts = useProductStore((state) => state.setProducts);
-    const products = useProductStore((state) => state.products);
-   
-   const { data, isLoading,  } =  useQuery({
-        queryKey: ["fetch-products-category", category],
-        queryFn: () => api.fetchProductsByCategory(category),
-        enabled: !!category,
-    });
+  const { products, isLoading } = useProduct(category);
 
-    useEffect(() => {
-      if(data && data?.products) {
-        setProducts(data?.products)
-      }
-    }, [category, data?.products])
 
     if(isLoading) {
       return <LoadingSpinner />

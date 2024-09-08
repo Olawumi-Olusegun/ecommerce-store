@@ -3,30 +3,15 @@ import React from 'react'
 import { useUserStore } from '../stores/useUserStore';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
-import api from '../api';
-import useCartStore from '../stores/useCartStore';
+import useProduct from '../hooks/useProduct';
+
+
 const ProductCard = ({product}) => {
 
 	const navigate = useNavigate();
 
 	const authUser = useUserStore((state) => state.user);
-	const addToCart = useCartStore((state) => state.addToCart);
-
-	const mutation =  useMutation({
-		mutationKey: ["add-to-cart"],
-		mutationFn: api.addToCart,
-
-		onSuccess: () => {
-			if(product) {
-				addToCart(product)
-			}
-		}, 
-		onError: (error) => {
-			const message = error?.response?.data?.message ?? error?.message;
-			toast.error(message, { id: "add-to-cart" });
-		}
-	})
+	const { addToCartMutation, setProduct } = useProduct();
 
 const handleAddToCart = () => {
 
@@ -35,8 +20,8 @@ const handleAddToCart = () => {
 		navigate("/signin", {state: {}})
 		return;
 	}
-
-	mutation.mutate(product)
+	setProduct(product)
+	addToCartMutation.mutate(product)
 }
 
   return (
@@ -47,7 +32,7 @@ const handleAddToCart = () => {
 			</div>
 
 			<div className='mt-4 px-5 pb-5'>
-				<h5 className='text-xl font-semibold tracking-tight text-white'>{product.name}</h5>
+				<h5 className='text-xl font-semibold tracking-tight text-white  mt-auto min-h-20 line-clamp-3'>{product.name}</h5>
 				<div className='mt-2 mb-5 flex items-center justify-between'>
 					<p>
 						<span className='text-3xl font-bold text-emerald-400'>${product.price}</span>

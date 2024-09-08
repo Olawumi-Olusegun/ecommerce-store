@@ -1,12 +1,10 @@
 import { BarChart, PlusCircle, ShoppingBasket } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import CreateProductForm from "../../components/forms/CreateProductForm";
 import ProductsList from "../../components/ProductsList";
 import AnalyticsTab from "../../components/AnalyticsTab";
-import { useQuery } from "@tanstack/react-query";
-import api from "../../api";
-import useProductStore from "../../stores/useProductStore";
+import useProduct from "../../hooks/useProduct";
 
 const tabs = [
 	{ id: "create", label: "Create Product", icon: PlusCircle },
@@ -17,20 +15,8 @@ const tabs = [
 const Dashboard = () => {
 
   const [activeTab, setActiveTab] = useState("create");
+	
 
-  const { data, isLoading, error } = useQuery({
-	queryKey: ["fetch-all-products"],
-	queryFn: api.fetchAllProducts,
-  });
-
-  const setProducts = useProductStore((state) => state.setProducts)
-
-
-  useEffect(() => {
-	if(data && data?.products) {
-		setProducts(data?.products)
-	}
-  }, [data?.products])
 
   return (
 <div className='min-h-screen relative overflow-hidden'>

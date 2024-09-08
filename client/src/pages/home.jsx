@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import CategoryItem from '../components/CategoryItem';
-import { useQuery } from '@tanstack/react-query';
-import api from '../api';
-import useProductStore from '../stores/useProductStore';
 import FeaturedProducts from '../components/FeaturedProducts';
 import { Loader2 } from 'lucide-react';
+import useProduct from '../hooks/useProduct';
+import useProductStore from '../stores/useProductStore';
 
 
 const categories = [
@@ -19,19 +18,9 @@ const categories = [
 
 const Home = () => {
 
-  const fetchFeaturedProducts = useProductStore((state) => state.fetchFeaturedProducts)
+  const { fetchFeaturedProducts, isFeaturedProductLoading: isLoading } = useProduct();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["fetch-featured-products"],
-    queryFn: api.fetchFeaturedProducts,
-  });
-
-  useEffect(() => {
-    if(data && data?.products) {
-      fetchFeaturedProducts(data?.featuredProucts)
-    }
-  }, [data?.featuredProucts])
-
+  const featured  = useProductStore((state) => state.products);
 
   return (
     <div className='reative min-h-dvh text-white overflow-hidden'>
@@ -45,13 +34,11 @@ const Home = () => {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {
-            categories.map((category) => <CategoryItem key={category.id} category={category} />)
-          }
+          { categories.map((category) => <CategoryItem key={category.id} category={category} />) }
         </div>
 
           {isLoading && <Loader2 className='animate-spin text-white text-center ' size={30} /> }
-          { data && data?.featuredProucts?.length > 0 && <FeaturedProducts featuredProducts={data?.featuredProucts} /> }
+          { featured && featured.length > 0 && <FeaturedProducts featuredProducts={featured} /> }
 
       </div>
     </div>

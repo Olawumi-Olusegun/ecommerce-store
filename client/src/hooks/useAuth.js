@@ -21,10 +21,8 @@ export const useAuth = () => {
     mutationFn: api.signout,
     onSuccess: () => {
       logout();
-      queryClient.invalidateQueries(); // This will stop queries from refetching
-      queryClient.clear(); // Clears the query cache (optional)
+      queryClient.clear();
       queryClient.removeQueries();
-      navigate("/signin", { replace: true });
     },
 
     onError: (error) => {

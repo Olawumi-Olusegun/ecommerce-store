@@ -1,26 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react'
+import React from 'react'
 import LoadingSpinner from "./../components/LoadingSpinner"
-import api from '../api';
 import AnalyticsCard from './AnalyticsCard';
 import { DollarSign, Package, ShoppingCart, User } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion"
+import useProduct from '../hooks/useProduct';
 
 const AnalyticsTab = () => {
 
-  const [analyticsData, setAnalyticsData] = useState({
-    users: 0,
-    products: 0,
-    totalSales: 0,
-    totalRevenue: 0,
-  });
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["fetch-analytics-data"],
-    queryFn: api.fetchAnalyticsData,
-  });
-
+const { analyticsData: data, isLoadingAnalytics: isLoading } = useProduct();
 
   if(isLoading) {
     return <LoadingSpinner />
