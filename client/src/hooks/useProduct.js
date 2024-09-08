@@ -75,7 +75,7 @@ const useProduct = (category = "") => {
     if(featuredData && featuredData?.featuredProucts) {
       setFeaturedProducts(featuredData?.featuredProucts)
     }
-  }, [featuredData?.featuredProucts, setProducts])
+  }, [featuredData?.featuredProucts, setFeaturedProducts])
 
     useEffect(() => {
       if(data && data?.products) {
