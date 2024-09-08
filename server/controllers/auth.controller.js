@@ -39,6 +39,7 @@ export const signup = async (req, res) => {
             return res.status(400).json({ success: false, message: "User account not created" })
         }
 
+
         // generate token
         const accessToken = generateToken(savedUser.id, process.env.ACCESS_TOKEN_SECRET, "15m");
         const refreshToken = generateToken(savedUser.id, process.env.REFRESH_TOKEN_SECRET,  "7d");
@@ -80,6 +81,7 @@ export const signin = async (req, res) => {
         if(!isValidPassword) {
             return res.status(400).json({ success: false, message: "Invalid credentials" })
         }
+
         
         // generate token
         const accessToken = generateToken(userExist.id, process.env.ACCESS_TOKEN_SECRET, "15m");
@@ -89,7 +91,8 @@ export const signin = async (req, res) => {
 
         setCookies(res, accessToken, refreshToken);
 
-        return res.status(201).json({ 
+
+        return res.status(200).json({ 
             user: {
             _id: userExist.id,
             name: userExist.name,
@@ -138,6 +141,7 @@ export const newRefreshToken = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
+
         // generate token
         const newAccessToken = generateToken(user.id, process.env.ACCESS_TOKEN_SECRET, "15m");
         const newRefreshToken = generateToken(user.id, process.env.REFRESH_TOKEN_SECRET,  "7d");
@@ -146,7 +150,7 @@ export const newRefreshToken = async (req, res) => {
 
         setCookies(res, newAccessToken, newRefreshToken);
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             user: {
             _id: user.id,
             name: user.name,
@@ -186,10 +190,10 @@ export const signout = async (req, res) => {
 
 export const userProfile = async (req, res) => {
 
-    const { _id, name, email, role, image } = req.user;
+    const { _id, name, email, role, image, exp } = req.user;
 
     try {
-        const user = { _id, name, email, role, image }
+        const user = { _id, name, email, role, image, exp  }
         return res.status(200).json({user, success: true, message: "User profile"})
     } catch (error) {
         console.log(`[USER_PROFILE]: ${error}`)
