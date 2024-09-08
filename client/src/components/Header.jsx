@@ -48,13 +48,13 @@ const Header = () => {
             </button>
           ) : (
             <>
-            <Link to={"/signup"} className='bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-2 md:px-4 
+            <Link to={"/signup"} className='bg-emerald-600 hover:bg-emerald-700 text-white  px-2 md:px-4 py-2 md:py-1 
 									rounded-md flex items-center gap-1 transition duration-300 ease-in-out'>
               <UserPlus size={18} />
               <span className='hidden sm:inline'>Signup</span>
             </Link>
 
-            <Link to={"/signin"} className='bg-gray-700 hover:bg-gray-600 text-white py-2 px-2 md:px-4 
+            <Link to={"/signin"} className='bg-gray-700 hover:bg-gray-600 text-white  px-2 md:px-4 py-2 md:py-1 
 									rounded-md flex items-center gap-1 transition duration-300 ease-in-out'>
               <LogIn size={18} />
               <span className='hidden sm:inline'>Signin</span>
