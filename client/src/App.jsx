@@ -11,19 +11,9 @@ import Category from "./pages/category"
 import ProtectedRoute from "./pages/layouts/ProtectedRoute"
 import PaymentCancel from "./pages/cancel"
 import PurchaseSuccessPage from "./pages/success"
-import usePersistUser from "./hooks/usePersistUser"
-import LoadingSpinner from "./components/LoadingSpinner"
+
 
 function App() {
-
-  const { isLoading } = usePersistUser();
-
-  if(isLoading) {
-    return <LoadingSpinner />
-  }
-
-
-
   return (
     <>
       <Routes>

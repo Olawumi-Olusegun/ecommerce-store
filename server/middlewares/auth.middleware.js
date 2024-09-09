@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.model.js";
 import { verifyToken } from "../utils/generateToken.js";
+import mongoose from "mongoose";
 
 export const protectRoute = async (req, res, next) => {
     try {
@@ -12,9 +13,17 @@ export const protectRoute = async (req, res, next) => {
         }
 
         const decoded = verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET || "");
-       
+
         if(!decoded || !decoded?.userId) {
             return res.status(404).json({ success: false, message: "Invalid/notfound token" })
+        }
+
+        if(typeof decoded?.userId !== "string") {
+            return res.status(400).json({ success: false, message: "Invalid userId " })
+        }
+
+        if(!mongoose.isValidObjectId(decoded?.userId)) {
+            return res.status(400).json({ success: false, message: "Invalid userId " })
         }
 
         const user = await UserModel.findById(decoded?.userId).select("-password");
@@ -25,7 +34,7 @@ export const protectRoute = async (req, res, next) => {
 
         req.user = user;
 
-        req.exp =  decoded.exp;
+        req.exp =  decoded?.exp;
 
         next();
 

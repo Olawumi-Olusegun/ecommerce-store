@@ -6,7 +6,6 @@ const baseURL = import.meta.mode === "development" ? "http://localhost:5000/api"
 
     const callRefreshTokenApi = async () => await axios.post(`${baseURL}/v1/auth/refresh-token`, { withCredentials: true });
 
-   
    axiosInstance.interceptors.request.use(async (request) => {
 
     const storedData = JSON.parse(localStorage.getItem("auth-user")) ?? null;
@@ -20,12 +19,15 @@ const baseURL = import.meta.mode === "development" ? "http://localhost:5000/api"
         const refreshedRequest = await callRefreshTokenApi();
 
         const newUserData = {
-          ...userData,
-          user: refreshedRequest?.data?.user
+          ...storedData,
+          state: {
+            ...storedData.state,
+            user: refreshedRequest?.data?.user,
+          }
         }
-  
+
         localStorage.setItem('auth-user', JSON.stringify(newUserData));
-  
+
         return request;
         
       } catch (error) {
@@ -39,13 +41,16 @@ const baseURL = import.meta.mode === "development" ? "http://localhost:5000/api"
     if(error?.response?.status === 401) {
       try {
         const storedData = JSON.parse(localStorage.getItem("auth-user")) ?? null;
-        const userData = storedData?.state;
         const requestResponse = await callRefreshTokenApi();
 
         const newUserData = {
-          ...userData,
-          user: requestResponse?.data?.user
+          ...storedData,
+          state: {
+            ...storedData.state,
+            user: requestResponse?.data?.user,
+          }
         }
+
         localStorage.setItem('auth-user', JSON.stringify(newUserData));
       } catch (refreshTokenError) {
         localStorage.removeItem("auth-user")
@@ -56,7 +61,7 @@ const baseURL = import.meta.mode === "development" ? "http://localhost:5000/api"
 
     }
 
-    return Promise.reject(error?.message);
+    return Promise.reject(error);
    })
    
    
@@ -74,10 +79,12 @@ const baseURL = import.meta.mode === "development" ? "http://localhost:5000/api"
 
               const storedData = JSON.parse(localStorage.getItem("auth-user")) ?? null;
 
-              const userData = storedData?.state;
               const newUserData = {
-                ...userData,
-                user: responseResult?.data?.user
+                ...storedData,
+                state: {
+                  ...storedData.state,
+                  user: responseResult?.data?.user,
+                }
               }
 
               localStorage.setItem('auth-user', JSON.stringify(newUserData));
@@ -91,7 +98,7 @@ const baseURL = import.meta.mode === "development" ? "http://localhost:5000/api"
       
           }
 
-          return Promise.reject(error?.message);
+          return Promise.reject(error);
       
       });
 

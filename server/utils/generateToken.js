@@ -7,3 +7,7 @@ export const generateToken = (userId, tokenSecret, expiresIn) => {
 export const verifyToken = (token, tokenSecret) => {
     return jwt.verify(token, tokenSecret);
 }
+
+export const decodeToken = (token) => {
+    return jwt.decode(token);
+}

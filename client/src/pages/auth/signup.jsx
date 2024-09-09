@@ -146,10 +146,10 @@ const Signup = () => {
 
           </form>
 
-					<p className='mt-8 text-center text-sm text-gray-400'>
+					<p className='flex items-center justify-center gap-2 mt-8 text-center text-sm text-gray-400'>
 						Already have an account?{" "}
-						<Link to='/signin' className='font-medium text-emerald-400 hover:text-emerald-300'>
-							Signin here <ArrowRight className='inline h-4 w-4' />
+						<Link to='/signin' className='group flex items-center font-medium text-emerald-400 hover:text-emerald-300'>
+							Signin here <ArrowRight className='inline h-4 w-4 group-hover:translate-x-1 duration-300' />
 						</Link>
 					</p>
 

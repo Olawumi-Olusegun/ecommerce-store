@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.model.js"
-import { generateToken, verifyToken } from "../utils/generateToken.js";
+import { decodeToken, generateToken, verifyToken } from "../utils/generateToken.js";
 import { redis, storeRefreshToken } from "../utils/redis.js";
 
 const setCookies = (res, accessToken, refreshToken) => {
@@ -25,6 +25,15 @@ export const signup = async (req, res) => {
     const { email, password, name } = req.body;
 
     try {
+
+        if(!process.env.ACCESS_TOKEN_SECRET) {
+            return res.status(404).json({ success: false, message: "Token not found" })
+        }
+
+        if(!process.env.REFRESH_TOKEN_SECRET) {
+            return res.status(404).json({ success: false, message: "Token not found" })
+        }
+
         const userExist = await UserModel.findOne({ email });
 
         if(userExist) {
@@ -48,15 +57,18 @@ export const signup = async (req, res) => {
 
         setCookies(res, accessToken, refreshToken);
 
+        const decodedToken = decodeToken(accessToken);
+
         return res.status(201).json({ 
             user: {
             _id: savedUser.id,
             name: savedUser.name,
             email: savedUser.email,
             role: savedUser.role,
-        }, 
-        success: true, 
-        message: "User account created" 
+            exp: decodedToken?.exp ?? undefined,
+        },
+        success: true,
+        message: "User account created"
     });
 
     } catch (error) {
@@ -70,6 +82,18 @@ export const signin = async (req, res) => {
     const { email, password} = req.body;
     try {
 
+        if(!process.env.ACCESS_TOKEN_SECRET) {
+            return res.status(404).json({ success: false, message: "Token not found" })
+        }
+
+        if(!process.env.REFRESH_TOKEN_SECRET) {
+            return res.status(404).json({ success: false, message: "Token not found" })
+        }
+
+        if(!email.trim()) {
+            return res.status(404).json({ success: false, message: "Email not specified" })
+        }
+
         const userExist = await UserModel.findOne({ email });
 
         if(!userExist) {
@@ -82,7 +106,6 @@ export const signin = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid credentials" })
         }
 
-        
         // generate token
         const accessToken = generateToken(userExist.id, process.env.ACCESS_TOKEN_SECRET, "15m");
         const refreshToken = generateToken(userExist.id, process.env.REFRESH_TOKEN_SECRET,  "7d");
@@ -91,27 +114,37 @@ export const signin = async (req, res) => {
 
         setCookies(res, accessToken, refreshToken);
 
+        const decodedToken = decodeToken(accessToken);
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             user: {
             _id: userExist.id,
             name: userExist.name,
             email: userExist.email,
             role: userExist.role,
-        }, 
-        success: true, 
-        message: "Logged in successfully" 
+            exp: decodedToken?.exp ?? undefined,
+        },
+        success: true,
+        message: "Logged in successfully"
     });
 
     } catch (error) {
         console.log(`[SIGNIN_ERROR]: ${error}`)
-        return res.status(500).json({ success: false, message: "Unknown error occured" })
+        return res.status(500).json({ success: false, message: "Unknown error occured" });
     }
 }
 
 export const newRefreshToken = async (req, res) => {
 
     try {
+
+        if(!process.env.ACCESS_TOKEN_SECRET) {
+            return res.status(404).json({ success: false, message: "Token not found" })
+        }
+
+        if(!process.env.REFRESH_TOKEN_SECRET) {
+            return res.status(404).json({ success: false, message: "Token not found" })
+        }
 
         const refreshToken = req.cookies["refreshToken"];
 
@@ -120,6 +153,8 @@ export const newRefreshToken = async (req, res) => {
         }
 
         const decoded = verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+
 
         if(!decoded || !decoded?.userId) {
             return res.status(404).json({ success: false, message: "Invalid/notfound token" })
@@ -141,7 +176,6 @@ export const newRefreshToken = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-
         // generate token
         const newAccessToken = generateToken(user.id, process.env.ACCESS_TOKEN_SECRET, "15m");
         const newRefreshToken = generateToken(user.id, process.env.REFRESH_TOKEN_SECRET,  "7d");
@@ -150,12 +184,15 @@ export const newRefreshToken = async (req, res) => {
 
         setCookies(res, newAccessToken, newRefreshToken);
 
+        const decodedToken = decodeToken(newAccessToken);
+
         return res.status(200).json({
             user: {
             _id: user.id,
             name: user.name,
             email: user.email,
             role: user.role,
+            exp: decodedToken?.exp ?? undefined,
         }, 
         success: true, 
         message: "Token refreshed successfully" 
@@ -173,7 +210,7 @@ export const signout = async (req, res) => {
         const refreshToken = req.cookies["refreshToken"];
         if(refreshToken) {
             const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-            if(decodedToken && decodedToken.userId) {
+            if(decodedToken && decodedToken?.userId) {
                 await redis.del(`refresh_token:${decodedToken.userId}`)
             }
         }

@@ -10,9 +10,9 @@ export const useAuth = () => {
 
   const queryClient = useQueryClient();
 
-    const setUser = useUserStore((state) => state.setUser);
-    const logout = useUserStore((state) => state.logout);
-    const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
+  const logout = useUserStore((state) => state.logout);
+  const user = useUserStore((state) => state.user);
 
   const isAdmin = user && user.role === "admin";
 
@@ -21,13 +21,14 @@ export const useAuth = () => {
     mutationFn: api.signout,
     onSuccess: () => {
       logout();
+      queryClient.setQueryData(["auth-user"], null);
       queryClient.clear();
       queryClient.removeQueries();
+      navigate("/", { replace: true });
     },
-
     onError: (error) => {
       const message = error?.response?.data?.message || "";
-      toast.error(message)
+      toast.error(message, {id: "signout"});
     }
   });
 
@@ -37,12 +38,13 @@ export const useAuth = () => {
     onSuccess: (data) => {
       if (data?.user) {
         setUser(data?.user);
-        navigate("/", { replace: true })
+        queryClient.setQueryData(["auth-user"], data?.user);
+        navigate("/", { replace: true });
       }
     },
     onError: (error) => {
       const message = error?.response?.data?.message || "";
-      toast.error(message)
+      toast.error(message, {id: "signin"});
     }
   });
 
@@ -53,12 +55,13 @@ export const useAuth = () => {
     onSuccess: (data) => {
       if (data?.user) {
         setUser(data?.user);
+        queryClient.setQueryData(["auth-user"], data?.user);
         navigate("/", { replace: true })
       }
     },
     onError: (error) => {
       const message = error?.response?.data?.message || "";
-      toast.error(message)
+      toast.error(message, {id: "signup"});
     }
   });
 
