@@ -16,7 +16,7 @@ const Header = () => {
   return (
     <header className="fixed flex items-center justify-between p-5 py-4 top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-emerald-800">
       <Link to={"/"} className='flex items-center gap-2' >
-          <img src="logo.png" alt="logo" className='size-7' />
+          <img src="/logo.png" alt="logo" className='size-7' />
           <span className='font-bold hover:text-emerald-400 duration-300'>E-store</span>
       </Link>
       <nav className='flex flex-wrap items-center gap-3'>

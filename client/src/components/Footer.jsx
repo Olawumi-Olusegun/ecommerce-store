@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="grid grid-cols-12 gap-5 gap-y-10">
         <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <Link to={"/"} className='w-fit inline-block' >
-          <img src="logo.png" alt="logo" className='size-20' />
+          <img src="/logo.png" alt="logo" className='size-20' />
         </Link>
           
           <h2 className="font-bold text-2xl lg:text-4xl leading-10 mt-5 ">
