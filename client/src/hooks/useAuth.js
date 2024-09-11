@@ -1,12 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserStore } from "../stores/useUserStore";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 export const useAuth = () => {
 
   const navigate = useNavigate();
+  const {state} = useLocation();
 
   const queryClient = useQueryClient();
 
@@ -24,7 +25,7 @@ export const useAuth = () => {
       queryClient.setQueryData(["auth-user"], null);
       queryClient.clear();
       queryClient.removeQueries();
-      navigate("/", { replace: true });
+      navigate("/");
     },
     onError: (error) => {
       const message = error?.response?.data?.message || "";
@@ -39,7 +40,7 @@ export const useAuth = () => {
       if (data?.user) {
         setUser(data?.user);
         queryClient.setQueryData(["auth-user"], data?.user);
-        navigate("/", { replace: true });
+        navigate(state?.path || "/");
       }
     },
     onError: (error) => {
@@ -56,7 +57,7 @@ export const useAuth = () => {
       if (data?.user) {
         setUser(data?.user);
         queryClient.setQueryData(["auth-user"], data?.user);
-        navigate("/", { replace: true })
+        navigate(state?.path || "/");
       }
     },
     onError: (error) => {

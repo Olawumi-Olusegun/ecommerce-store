@@ -15,19 +15,19 @@ const usePersistUser = () => {
 
     const isAdmin = user && user.role === "admin" ? true : false;
 
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading, error, isSuccess } = useQuery({
         queryKey: ["auth-profile"],
         queryFn: api.userProfile,
         enabled: !user,
     });
 
     useEffect(() => {
-        if (data?.user && data?.user?._id) {
+        if (isSuccess && data?.user && data?.user?._id) {
           setUser(data.user);
           queryClient.setQueryData(["auth-user"], data?.user);
         }
-      }, [data, setUser]);
+      }, [isSuccess, data, setUser ]);
 
-    return { data, isLoading, error: error?.message, user, isAdmin, isAuth }
+    return {isSuccess, data, isLoading, error: error?.message, user, isAdmin, isAuth }
 }
 export default usePersistUser;

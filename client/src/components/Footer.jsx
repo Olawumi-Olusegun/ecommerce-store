@@ -11,7 +11,7 @@ const Footer = () => {
           <img src="/logo.png" alt="logo" className='size-20' />
         </Link>
           
-          <h2 className="font-bold text-2xl lg:text-4xl leading-10 mt-5 ">
+          <h2 className="font-bold text-2xl pr-10 leading-10 mt-5 ">
             We growing up your business with personal AI Manager.
           </h2>
         </div>

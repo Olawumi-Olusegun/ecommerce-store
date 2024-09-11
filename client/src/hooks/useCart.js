@@ -4,7 +4,7 @@ import { useUserStore } from "../stores/useUserStore";
 
 import { useEffect, useState } from "react";
 import api from "../api";
-import usePersistUser from "./usePersistUser";
+import { replace, useLocation, useNavigate } from "react-router-dom";
 
 
 const useCart = () => {
@@ -13,6 +13,9 @@ const useCart = () => {
   const [item, setItem] = useState(0);
 
   const queryClient = useQueryClient();
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
     const cart = useCartStore((state) => state.cart);
     const getCartItems = useCartStore((state) => state.getCartItems);
@@ -35,9 +38,13 @@ const useCart = () => {
         mutationKey: ["remove-all-from-cart"],
         mutationFn: api.removeAllFromCart,
         onSuccess: () => {
-            if(item) {
-                removeFromCart(item)
-            }
+          if(!user || !user?._id) {
+            navigate("/signin", { replace: true, state: { path: location.pathname } });
+            return;
+          }
+          if(item && user) {
+              removeFromCart(item)
+          }
         }
     })
 
@@ -45,6 +52,10 @@ const useCart = () => {
         mutationKey: ["update-cart-quantity"],
         mutationFn: api.updateCartQuantity,
         onSuccess: () => {
+          if(!user || !user?._id) {
+            navigate("/signin", { replace: true, state: { path: location.pathname } });
+            return;
+          }
             if(item && user) {
                 updateCartQuantity(item, cartQuantity)
                 queryClient.invalidateQueries({ queryKey: ["get-cart-items", user?._id] })

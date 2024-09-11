@@ -37,7 +37,7 @@ const { deleteMutation, updateMutation, setCartQuantity, setItem } = useCart();
                     <div className='flex self-start items-center gap-2 h-full'>
 						<button
 							className='inline-flex h-8 w-8 p-1 shrink-0 items-center justify-center rounded-md border
-							 border-gray-600 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2
+							 border-gray-600 bg-gray-700 hover:bg-gray-600 duration-300 focus:outline-none focus:ring-2
 							  focus:ring-emerald-500'
 							onClick={() => handleUpdateCart(item.quantity - 1)}
 						>
@@ -46,7 +46,7 @@ const { deleteMutation, updateMutation, setCartQuantity, setItem } = useCart();
 						<p className='p-1.5'>{item.quantity}</p>
 						<button
 							className='inline-flex h-8 w-8 p-1 shrink-0 items-center justify-center rounded-md border
-							 border-gray-600 bg-gray-700 hover:bg-gray-600 focus:outline-none 
+							 border-gray-600 bg-gray-700 hover:bg-gray-600 duration-300 focus:outline-none 
 						focus:ring-2 focus:ring-emerald-500'
 							onClick={() => handleUpdateCart(item.quantity + 1)}
 						>
