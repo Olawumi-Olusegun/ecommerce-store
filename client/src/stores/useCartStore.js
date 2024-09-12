@@ -12,23 +12,22 @@ const useCartStore = create((set, get) => ({
     },
 
     addToCart: (cartItem) => {
-        set((prevState) => {
-            const findIndex = prevState.cart.findIndex((item) => item?._id === cartItem?._id);
-            
-            const newCart = [...prevState.cart];
-            
-            if (findIndex >= 0) {
-              newCart[findIndex] = {
-                ...newCart[findIndex], 
-                quantity: newCart[findIndex].quantity + 1,
-              };
-            } else {
-              newCart.push({ ...cartItem, quantity: 1 });
-            }
-            return { ...prevState, cart: newCart };
-          });
+
+        const cart = [...get().cart];
+        const findCartIndex = cart.findIndex((item) => item?._id === cartItem?._id);
+
+        if(findCartIndex >= 0) {
+            cart[findCartIndex].quantity++;
+        } else {
+            cart.push({ ...cartItem, quantity: 1});
+        }
+
+        set({ cart });
+
         get().calculateTotals();
+
     },
+
     removeFromCart: (product) => {
         set((prevState) => ({ cart: prevState.cart.filter((item) => item?._id !== product?._id) }));
         get().calculateTotals();

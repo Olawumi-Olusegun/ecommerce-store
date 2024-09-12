@@ -20,7 +20,7 @@ export const addToCart = async (product) => {
 
 export const removeAllFromCart = async (product) => {
     try {
-        const { data } = await axiosInstance.delete(`/v1/carts`, { productId: product?._id });
+        const { data } = await axiosInstance.delete(`/v1/carts/${product?._id}`,);
         return data;
     } catch (error) {
         throw error;

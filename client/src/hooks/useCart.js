@@ -4,7 +4,7 @@ import { useUserStore } from "../stores/useUserStore";
 
 import { useEffect, useState } from "react";
 import api from "../api";
-import { replace, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 const useCart = () => {
@@ -31,8 +31,6 @@ const useCart = () => {
       enabled: !!user?._id,
     });
   
-
-
 
    const deleteMutation =  useMutation({
         mutationKey: ["remove-all-from-cart"],
@@ -68,7 +66,7 @@ const useCart = () => {
       if(user && data && data?.cartItems) {
         getCartItems(data?.cartItems)
       }
-    }, [user, data?.cartItems, getCartItems])
+    }, [user, data?.cartItems, getCartItems,])
 
     return { cart, deleteMutation, updateMutation, setCartQuantity, setItem, isCartLoading }
 
