@@ -90,7 +90,6 @@ export const updateCartQuantity = async (req, res) => {
 
         return res.status(200).json({carts: user.cartItems, success: true, message: "Cart updated successfully"});
 
-
     } catch (error) {
         console.log(`[UPDATE_CART_PRODUCT_QUANTITY]: ${error}`)
         return res.status(500).json({ success: false, message: "Unknown error occured" });

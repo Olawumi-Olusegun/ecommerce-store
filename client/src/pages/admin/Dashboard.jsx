@@ -41,7 +41,7 @@ const Dashboard = () => {
 									: "bg-gray-700 text-gray-300 hover:bg-gray-600"
 							}`}
 						>
-							<tab.icon className='mr-2 h-5 w-5' />
+							<tab.icon className='hidden md:block mr-2 h-5 w-5' />
 							{tab.label}
 						</button>
 					))}

@@ -36,40 +36,36 @@ const useCartStore = create((set, get) => ({
     clearCart: () => set({ cart: [], total: 0, subTotal: 0, coupon: null }),
 
     updateCartQuantity: (product, quantity) => {
+
         if(quantity === 0) {
             get().removeFromCart(product)
             return;
         }
-        set((prevState) => {
 
-            const findIndex = prevState.cart.findIndex((item) => item?._id === product?._id)
-            const newCart = [...prevState.cart];
+        const cart = [...get().cart];
 
-            if(findIndex && newCart[findIndex].quantity > 0) {
-                newCart[findIndex].quantity = quantity;
-                newCart[findIndex] = {
-                    ...newCart[findIndex],
-                    quantity,
-                }
-            }
+        const findIndex = cart.findIndex((item) => item?._id === product?._id);
 
-            return { ...prevState, cart: newCart }
-        });
+        if(findIndex && cart[findIndex].quantity > 0) {
+            cart[findIndex].quantity = quantity;
+        }
+
+        set({ cart });
 
         get().calculateTotals();
+
     },
     calculateTotals: () => {
         const { cart, coupon, } = get();
         const subTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
         let total = subTotal;
+
         if(coupon) {
             const discount = subTotal * (coupon.discountPercentage / 100);
             total = subTotal - discount;
         }
-        
-        set({ subTotal, total });
 
-        
+        set({ subTotal, total });
 
     },
     getMyCoupons: (coupon) => set({ coupon }),

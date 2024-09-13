@@ -11,7 +11,7 @@ import useProduct from '../hooks/useProduct';
 const ProductsList = () => {
 const [itemId, setItemId] = useState('')
 //   const products = useProductStore((state) => state.products);
-const { products, allProducts } = useProduct();
+const { allProducts } = useProduct();
   const toggleFeaturedProduct = useProductStore((state) => state.toggleFeaturedProduct);
   const deleteProduct = useProductStore((state) => state.deleteProduct);
 
@@ -43,7 +43,7 @@ const { products, allProducts } = useProduct();
 
 
   const handleToggleFeatured = (productId) => {
-	mutation.mutate(productId)
+	mutation.mutate(productId);
   }
 
   const handleDeleteProduct = (productId) => {
@@ -52,13 +52,13 @@ const { products, allProducts } = useProduct();
   }
 
   return (
-<motion.div
-			className='bg-gray-800 shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto'
+		<motion.div
+			className='bg-gray-800 shadow-lg rounded-lg w-full md:max-w-4xl mx-auto'
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.8 }}
 		>
-			<table className=' min-w-full divide-y divide-gray-700'>
+			<table className='min-w-full divide-y divide-gray-700'>
 				<thead className='bg-gray-700'>
 					<tr>
 						<th
@@ -105,11 +105,12 @@ const { products, allProducts } = useProduct();
 											className='h-10 w-10 rounded-md object-cover pointer-events-none'
 											src={product.image}
 											alt={product.name}
+											title={product.name}
 										/>
 									</div>
-									<div className='ml-4'>
+									{/* <div className='ml-4'>
 										<div className='text-sm font-medium text-white'>{product.name}</div>
-									</div>
+									</div> */}
 								</div>
 							</td>
 							<td className='px-6 py-4 whitespace-nowrap'>
@@ -131,9 +132,9 @@ const { products, allProducts } = useProduct();
 							<td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
 								<button
 									onClick={() => handleDeleteProduct(product._id)}
-									className='text-red-400 hover:text-red-300 bg-white/20 hover:bg-white/30 p-1 rounded-md transition-all duration-300'
+									className='text-red-400 hover:text-red-300 bg-white/20 hover:bg-white/30 p-1.5 rounded-md transition-all duration-300'
 								>
-									<Trash className='h-5 w-5' />
+									<Trash size={18} />
 								</button>
 							</td>
 						</tr>
